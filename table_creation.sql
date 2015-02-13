@@ -1,0 +1,61 @@
+CREATE TABLE parks (
+	id INT AUTO_INCREMENT,
+	name VARCHAR(255) NOT NULL,
+	parksize INT,
+	location VARCHAR(255),
+	PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE trails (
+	id INT AUTO_INCREMENT,
+	name VARCHAR(255) NOT NULL,
+	traillength INT,
+	elevation INT,
+	difficulty VARCHAR(255),
+	days INT,
+	park INT,
+	PRIMARY KEY (id),
+	CONSTRAINT `park_id` FOREIGN KEY (park) REFERENCES parks (id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE wildlife (
+	id INT AUTO_INCREMENT,
+	name VARCHAR(255) NOT NULL,
+	classification VARCHAR(255),
+	rarity VARCHAR(255),
+	biome INT,
+	PRIMARY KEY (id),
+	CONSTRAINT `biome_id` FOREIGN KEY (biome) REFERENCES natural_features (id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE natural_features (
+	id INT AUTO_INCREMENT,
+	biome_name VARCHAR(255) NOT NULL,
+	weather VARCHAR(255),
+	PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE wildlife_parks (
+	NP_id INT,
+	wild_id INT,
+	CONSTRAINT `NP_id_id` FOREIGN KEY (NP_id) REFERENCES parks (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT `wild_id_id` FOREIGN KEY (wild_id) REFERENCES wildlife (id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE parks_features (
+	NParks_id INT,
+	nat_id INT,
+	CONSTRAINT `NParks_id_id` FOREIGN KEY (NParks_id) REFERENCES parks (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT `nat_id_id` FOREIGN KEY (nat_id) REFERENCES natural_features (id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SELECT NP.name
+FROM parks NP
+INNER JOIN trails T ON T.id = NP.id
+WHERE T.name = 'Bright Angel'
+
+SELECT NP.name
+FROM parks NP
+INNER JOIN wildlife_parks WP ON WP.NP_id = NP.id
+INNER JOIN wildlife W ON W.id = WP.wild_id
+WHERE W.name = 'Squirrel'
